@@ -8,7 +8,7 @@ import '../view/wallet/widgets/wallet_screen.dart';
 import 'routes.dart';
 
 GoRouter router() => GoRouter(
-      initialLocation: Routes.splash,
+      initialLocation: Routes.home,
       debugLogDiagnostics: true,
       routes: [
         GoRoute(

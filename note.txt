@@ -3,7 +3,6 @@
 
 
 
-
 - Testing
 
 
@@ -18,4 +17,5 @@
 
 
 - Done
+    - Make popular cities widget in home screen
     - Develop splash screen

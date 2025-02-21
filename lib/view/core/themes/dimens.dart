@@ -38,8 +38,8 @@ abstract final class Dimens {
       };
 }
 
-// Desktop dimensions
-final class _DimensDesktop extends Dimens {
+// Mobile dimensions
+final class _DimensMobile extends Dimens {
   @override
   final double paddingScreenHorizontal = Dimens.paddingHorizontal;
 
@@ -58,11 +58,11 @@ final class _DimensDesktop extends Dimens {
   @override
   final double tileImageHeight = 110.0;
 
-  const _DimensDesktop();
+  const _DimensMobile();
 }
 
-// Mobile dimensions
-final class _DimensMobile extends Dimens {
+// Desktop dimensions
+final class _DimensDesktop extends Dimens {
   @override
   final double paddingScreenHorizontal = 48.0;
 
@@ -81,5 +81,5 @@ final class _DimensMobile extends Dimens {
   @override
   final double tileImageHeight = 110.0;
 
-  const _DimensMobile();
+  const _DimensDesktop();
 }
