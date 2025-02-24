@@ -1,9 +1,10 @@
 import 'package:cozy_house_app/view/core/themes/fonts.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/themes/colors.dart';
 import '../../core/themes/dimens.dart';
 import '../../core/ui/popular_card.dart';
+import '../../core/ui/recommended_tile.dart';
+import '../../core/ui/tips_tile.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -68,20 +69,84 @@ class HomeScreen extends StatelessWidget {
       );
     }
 
-    return Scaffold(
-      backgroundColor: whiteColor,
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        scrollDirection: Axis.vertical,
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              headerHome(),
-              popularCities(),
-            ],
-          ),
+    Widget recommendedSpace() {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: Dimens.paddingHorizontal),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Recommended Space",
+              style: blackTextStyle.copyWith(fontSize: 16),
+            ),
+            const SizedBox(height: 16),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 10,
+              itemBuilder: (context, index) {
+                return RecommendedTile(
+                  tileName: "Kuretakeso Hott",
+                  imageUrl: "assets/space1.png",
+                  rating: 4,
+                  price: 52,
+                  city: "Bandung",
+                  country: "Indonesia",
+                );
+              },
+            ),
+          ],
         ),
+      );
+    }
+
+    Widget tipsGuidance() {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: Dimens.paddingHorizontal),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Tips & Guidance",
+              style: blackTextStyle.copyWith(fontSize: 16),
+            ),
+            const SizedBox(height: 16),
+            TipsTile(
+              title: "City Guidelines",
+              imageUrl: "assets/tips1.png",
+              updateDate: "Updated 20 Apr",
+            ),
+            const SizedBox(height: 20),
+            TipsTile(
+              title: "Jakarta Fairship",
+              imageUrl: "assets/tips2.png",
+              updateDate: "Updated 11 Dec",
+            ),
+          ],
+        ),
+      );
+    }
+
+    return SafeArea(
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                headerHome(),
+                popularCities(),
+                const SizedBox(height: 20),
+                recommendedSpace(),
+                const SizedBox(height: 20),
+                tipsGuidance(),
+                const SizedBox(height: 120),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
