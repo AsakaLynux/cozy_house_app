@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import '../../core/themes/colors.dart';
 import '../../favourite/widgets/favourite_screen.dart';
 import '../../home/widgets/home_screen.dart';
-import '../../mail/widgets/mail_screen.dart';
-import '../../wallet/widgets/wallet_screen.dart';
+import '../../history/widgets/history_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -81,34 +80,17 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                   label: "Home",
                 ),
                 BottomNavigationBarItem(
-                  icon: Image.asset(
-                    "assets/icon_mail.png",
-                    width: 26,
-                    height: 26,
+                  icon: Icon(
+                    Icons.history,
+                    size: 26,
                     color: greyColor,
                   ),
-                  activeIcon: Image.asset(
-                    "assets/icon_mail.png",
-                    width: 26,
-                    height: 26,
-                    color: purpleColor,
-                  ),
-                  label: "Mail",
-                ),
-                BottomNavigationBarItem(
-                  icon: Image.asset(
-                    "assets/icon_card.png",
-                    width: 26,
-                    height: 26,
+                  activeIcon: Icon(
+                    Icons.history,
+                    size: 26,
                     color: greyColor,
                   ),
-                  activeIcon: Image.asset(
-                    "assets/icon_card.png",
-                    width: 26,
-                    height: 26,
-                    color: purpleColor,
-                  ),
-                  label: "Card",
+                  label: "History",
                 ),
                 BottomNavigationBarItem(
                   icon: Image.asset(
@@ -141,9 +123,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             onPageChanged: _handlePageViewChanged,
             children: [
               HomeScreen(),
-              MailScreen(),
-              WalletScreen(),
-              FavouriteScreen()
+              HistoryScreen(),
+              FavouriteScreen(),
             ],
           ),
           bottomNavigationBar(),
