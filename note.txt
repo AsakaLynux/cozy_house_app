@@ -1,6 +1,6 @@
 
 - Development
-
+    
 
 - Testing
 
@@ -16,6 +16,7 @@
 
 
 - Done
+    - Develop house detail UI
     - Develop house details
     - Make popular cities widget in home screen
     - Develop splash screen

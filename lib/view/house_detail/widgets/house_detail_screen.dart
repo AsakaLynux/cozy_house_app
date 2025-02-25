@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../routing/routes.dart';
 import '../../core/themes/colors.dart';
 import '../../core/themes/dimens.dart';
 import '../../core/themes/fonts.dart';
 import '../../core/ui/custom_button.dart';
 
-class HouseDetailScreen extends StatelessWidget {
+class HouseDetailScreen extends StatefulWidget {
   const HouseDetailScreen({super.key});
 
+  @override
+  State<HouseDetailScreen> createState() => _HouseDetailScreenState();
+}
+
+class _HouseDetailScreenState extends State<HouseDetailScreen> {
+  bool isLoveButtonClick = false;
   @override
   Widget build(BuildContext context) {
     Widget mainFacilities() {
@@ -189,20 +197,28 @@ class HouseDetailScreen extends StatelessWidget {
             CustomButton(
               buttonText: "Book Now",
               buttonWidth: 255,
-              onPressed: () {},
+              onPressed: () => context.go(Routes.main),
             ),
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: cardBackgroundColor,
-                borderRadius: BorderRadius.circular(17),
-              ),
-              child: Center(
-                child: Image.asset(
-                  "assets/icon_love.png",
-                  width: 26,
-                  height: 26,
+            GestureDetector(
+              onTap: () {
+                setState(() => isLoveButtonClick
+                    ? isLoveButtonClick = false
+                    : isLoveButtonClick = true);
+              },
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: cardBackgroundColor,
+                  borderRadius: BorderRadius.circular(17),
+                ),
+                child: Center(
+                  child: Image.asset(
+                    "assets/icon_love.png",
+                    width: 26,
+                    height: 26,
+                    color: isLoveButtonClick ? redColor : greyColor,
+                  ),
                 ),
               ),
             )
