@@ -46,7 +46,7 @@ class SplashScreen extends StatelessWidget {
                         fixedSize: Size(210, 50),
                       ),
                       onPressed: () {
-                        context.go(Routes.home);
+                        context.go(Routes.main);
                       },
                       child: Text(
                         "Explore Now",
