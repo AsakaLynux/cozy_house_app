@@ -1,6 +1,8 @@
 import 'package:cozy_house_app/view/core/themes/fonts.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../routing/routes.dart';
 import '../../core/themes/dimens.dart';
 import '../../core/ui/popular_card.dart';
 import '../../core/ui/recommended_tile.dart';
@@ -85,13 +87,18 @@ class HomeScreen extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: 10,
               itemBuilder: (context, index) {
-                return RecommendedTile(
-                  tileName: "Kuretakeso Hott",
-                  imageUrl: "assets/space1.png",
-                  rating: 4,
-                  price: 52,
-                  city: "Bandung",
-                  country: "Indonesia",
+                return GestureDetector(
+                  onTap: () {
+                    context.go("${Routes.main}/${Routes.houseDetail}");
+                  },
+                  child: RecommendedTile(
+                    tileName: "Kuretakeso Hott",
+                    imageUrl: "assets/space1.png",
+                    rating: 4,
+                    price: 52,
+                    city: "Bandung",
+                    country: "Indonesia",
+                  ),
                 );
               },
             ),
