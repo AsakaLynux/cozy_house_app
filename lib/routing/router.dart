@@ -1,55 +1,41 @@
 import 'package:go_router/go_router.dart';
 
-import '../view/favourite/widgets/favourite_screen.dart';
-import '../view/home/widgets/home_screen.dart';
 import '../view/house_detail/widgets/house_detail_screen.dart';
 import '../view/main/widgets/main_screen.dart';
 import '../view/splash/widgets/splash_screen.dart';
-import '../view/wallet/widgets/wallet_screen.dart';
 import 'routes.dart';
 
 GoRouter router() => GoRouter(
-      initialLocation: Routes.main,
+      initialLocation: "${Routes.main}/${Routes.houseDetail}",
       debugLogDiagnostics: true,
       routes: [
         GoRoute(
           path: Routes.splash,
-          builder: (context, state) {
-            return SplashScreen();
-          },
+          builder: (context, state) => SplashScreen(),
         ),
         GoRoute(
           path: Routes.main,
-          builder: (context, state) {
-            return MainScreen();
-          },
+          builder: (context, state) => MainScreen(),
           routes: [
             GoRoute(
-              path: Routes.home,
-              builder: (context, state) {
-                return HomeScreen();
-              },
-              routes: [
-                GoRoute(
-                  path: Routes.houseDetail,
-                  builder: (context, state) {
-                    return HouseDetailScreen();
-                  },
-                ),
-              ],
+              path: Routes.houseDetail,
+              builder: (context, state) => HouseDetailScreen(),
             ),
-            GoRoute(
-              path: Routes.wallet,
-              builder: (context, state) {
-                return WalletScreen();
-              },
-            ),
-            GoRoute(
-              path: Routes.favourite,
-              builder: (context, state) {
-                return FavouriteScreen();
-              },
-            ),
+            // GoRoute(
+            //   path: Routes.home,
+            //   builder: (context, state) => HomeScreen(),
+            //   routes: [
+
+            //   ],
+            // ),
+            // GoRoute(
+            //   path: Routes.wallet,
+            //   builder: (context, state) => WalletScreen(),
+            // ),
+            // GoRoute(
+            //   path: Routes.favourite,
+            //   builder: (context, state) => FavouriteScreen(),
+            // ),
           ],
         ),
       ],
