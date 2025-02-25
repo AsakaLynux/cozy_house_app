@@ -134,7 +134,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
     return Scaffold(
       backgroundColor: whiteColor,
-      // bottomNavigationBar: bottomNavigationBar(),
       body: Stack(
         children: [
           PageView(
