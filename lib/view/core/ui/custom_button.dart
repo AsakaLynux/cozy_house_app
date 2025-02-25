@@ -6,7 +6,7 @@ import '../themes/fonts.dart';
 class CustomButton extends StatelessWidget {
   final String buttonText;
   final double buttonWidth;
-  final Function onPressed;
+  final Function() onPressed;
 
   const CustomButton({
     super.key,
@@ -25,7 +25,7 @@ class CustomButton extends StatelessWidget {
           enableFeedback: true,
           fixedSize: Size(buttonWidth, 50),
         ),
-        onPressed: onPressed(),
+        onPressed: onPressed,
         child: Text(
           buttonText,
           style: whiteTextStyle.copyWith(fontSize: 18),
