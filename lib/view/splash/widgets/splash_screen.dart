@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../routing/routes.dart';
 import '../../core/themes/colors.dart';
 import '../../core/themes/fonts.dart';
+import '../../core/ui/custom_button.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -36,23 +37,10 @@ class SplashScreen extends StatelessWidget {
                     style: greyTextStyle.copyWith(fontSize: 16),
                   ),
                   const SizedBox(height: 40),
-                  Container(
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(17)),
-                    child: ElevatedButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: purpleColor,
-                        enableFeedback: true,
-                        fixedSize: Size(210, 50),
-                      ),
-                      onPressed: () {
-                        context.go(Routes.main);
-                      },
-                      child: Text(
-                        "Explore Now",
-                        style: whiteTextStyle.copyWith(fontSize: 18),
-                      ),
-                    ),
+                  CustomButton(
+                    buttonText: "Explore Now",
+                    buttonWidth: 210,
+                    onPressed: () => context.go(Routes.main),
                   ),
                 ],
               ),
