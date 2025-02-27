@@ -6,12 +6,28 @@ import 'database_service.dart';
 DatabaseService databaseService = DatabaseService.intance;
 
 class UserService {
-  void getUser() async {
+  Future<UserModel> getUser() async {
     final db = await databaseService.database;
     final data = await db.query(userTableName);
     if (kDebugMode) {
       print("getUser(): $data");
     }
+    final userData = data
+        .map(
+          (e) => UserModel(
+            id: e["id"] as int,
+            userName: e["userName"] as String,
+            email: e["email"] as String,
+            password: e["password"] as String,
+            createBy: e["createBy"] as String,
+            createAt: e["createAt"] as DateTime,
+            updateBy: e["updateBy"] as String,
+            updateAt: e["updateAt"] as DateTime,
+          ),
+        )
+        .toList()
+        .first;
+    return userData;
   }
 
   void addUser(
