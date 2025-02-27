@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../routing/routes.dart';
-import '../../core/themes/colors.dart';
-import '../../core/themes/dimens.dart';
-import '../../core/themes/fonts.dart';
-import '../../core/ui/custom_button.dart';
+import '../routing/routes.dart';
+import 'core/themes/colors.dart';
+import 'core/themes/dimens.dart';
+import 'core/themes/fonts.dart';
+import 'core/widget/custom_button.dart';
 
 class HouseDetailScreen extends StatefulWidget {
   const HouseDetailScreen({super.key});

@@ -2,11 +2,11 @@ import 'package:cozy_house_app/view/core/themes/fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../routing/routes.dart';
-import '../../core/themes/dimens.dart';
-import '../../core/ui/popular_card.dart';
-import '../../core/ui/recommended_tile.dart';
-import '../../core/ui/tips_tile.dart';
+import '../routing/routes.dart';
+import 'core/themes/dimens.dart';
+import 'core/widget/popular_card.dart';
+import 'core/widget/recommended_tile.dart';
+import 'core/widget/tips_tile.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

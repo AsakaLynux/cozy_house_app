@@ -1,8 +1,8 @@
 import 'package:go_router/go_router.dart';
 
-import '../view/house_detail/widgets/house_detail_screen.dart';
-import '../view/main/widgets/main_screen.dart';
-import '../view/splash/widgets/splash_screen.dart';
+import '../view/house_detail_screen.dart';
+import '../view/main_screen.dart';
+import '../view/splash_screen.dart';
 import 'routes.dart';
 
 GoRouter router() => GoRouter(

@@ -1,10 +1,10 @@
 import 'package:cozy_house_app/view/core/themes/fonts.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/themes/colors.dart';
-import '../../favourite/widgets/favourite_screen.dart';
-import '../../home/widgets/home_screen.dart';
-import '../../history/widgets/history_screen.dart';
+import 'core/themes/colors.dart';
+import 'favourite_screen.dart';
+import 'home_screen.dart';
+import 'history_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
