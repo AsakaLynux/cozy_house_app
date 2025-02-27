@@ -45,7 +45,7 @@ class PlaceService {
       ],
     );
     if (kDebugMode) {
-      print("getPlace(int id): $data");
+      print("getPlace(): $data");
     }
     final place = data
         .map(
@@ -81,11 +81,11 @@ class PlaceService {
     );
     if (deleteData == 1) {
       if (kDebugMode) {
-        print("deletePlace(int id): Delete Place successed");
+        print("deletePlace(): Delete Place successed");
       }
     } else {
       if (kDebugMode) {
-        print("deletePlace(int id): Delete Place Failed");
+        print("deletePlace(): Delete Place Failed");
       }
     }
   }
