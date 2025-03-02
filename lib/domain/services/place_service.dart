@@ -73,69 +73,69 @@ class PlaceService {
 
   void deletePlace(int id) async {
     final db = await databaseService.database;
-    final deleteData = await db.delete(
+    await db.delete(
       placeTableName,
       where: "$placeIdColumnName = ?",
       whereArgs: [
         id,
       ],
     );
-    if (deleteData == 1) {
-      if (kDebugMode) {
-        print("deletePlace(): Delete Place successed");
-      }
-    } else {
-      if (kDebugMode) {
-        print("deletePlace(): Delete Place Failed");
-      }
+  }
+
+  void showPlaceAllData(String? function) async {
+    final db = await databaseService.database;
+    final data = await db.query(placeTableName);
+    if (kDebugMode) {
+      function == null
+          ? print("showPlaceAllData(): $data")
+          : print("$function: $data");
     }
   }
 
-  void insertPlace() async {
+  void insertDummyPlace() async {
     final db = await databaseService.database;
-    int countData = 1;
-    for (PlaceModel place in listPlace) {
-      final insertData = await db.insert(
-        placeTableName,
-        {
-          placeNameColumnName: place.name,
-          placeImageColumnName: place.image,
-          placeAddressColumnName: place.address,
-          placeCityColumnName: place.city,
-          placeCountryColumnName: place.country,
-          placeRatingColumnName: place.rating,
-          placePriceColumnName: place.price,
-          placeCreateByColumnName: place.createBy,
-          placeCreateAtColumnName: place.createAt,
-          placeUpdateByColumnName: place.updateBy,
-          placeUpdateAtColumnName: place.updateAt,
-        },
-      );
-      if (insertData == 1) {
-        if (kDebugMode) {
-          print("inserPlaceData() $countData: Insert Place successed");
-        }
-      } else {
-        if (kDebugMode) {
-          print("inserPlaceData() $countData: Insert Place Failed");
-        }
+
+    final data = await db.query(placeTableName);
+    if (data.isEmpty) {
+      if (kDebugMode) {
+        print(
+            "insertDummyPlace(): Place table data is empty, insert the data:");
       }
-      countData++;
+      for (PlaceModel place in listPlace) {
+        await db.insert(
+          placeTableName,
+          {
+            placeNameColumnName: place.name,
+            placeImageColumnName: place.image,
+            placeAddressColumnName: place.address,
+            placeCityColumnName: place.city,
+            placeCountryColumnName: place.country,
+            placeRatingColumnName: place.rating,
+            placePriceColumnName: place.price,
+            placeCreateByColumnName: place.createBy,
+            placeCreateAtColumnName: place.createAt.toString(),
+            placeUpdateByColumnName: place.updateBy,
+            placeUpdateAtColumnName: place.updateAt.toString(),
+          },
+        );
+      }
+      if (kDebugMode) {
+        print("insertDummyPlace(): Insert data success");
+      }
+    } else {
+      if (kDebugMode) {
+        print("insertDummyPlace(): Place table data already exist");
+      }
     }
+    showPlaceAllData("insertDummyPlace()");
   }
 
   void deleteAllPlace() async {
     final db = await databaseService.database;
-    final deleteData = await db.delete(placeTableName);
-
-    if (deleteData == 1) {
-      if (kDebugMode) {
-        print("deleteAllPlace(): Delete Place successed");
-      }
-    } else {
-      if (kDebugMode) {
-        print("deleteAllPlace(): Delete Place Failed");
-      }
+    await db.delete(placeTableName);
+    if (kDebugMode) {
+      print("deleteAllPlace(): Delete all data successed");
     }
+    showPlaceAllData("deleteAllPlace()");
   }
 }

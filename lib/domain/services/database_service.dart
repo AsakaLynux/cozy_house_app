@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -61,28 +62,97 @@ class DatabaseService {
 
   Future<Database> getDatabase() async {
     final databaseDirPath = await getDatabasesPath();
-    final databasePath = join(databaseDirPath, "master_db.db");
+    final databasePath = join(databaseDirPath, "master.db");
     final database = await openDatabase(
       databasePath,
       version: 1,
+      onConfigure: (db) async {
+        await db.execute('PRAGMA foreign_keys = ON');
+      },
       onCreate: (db, version) {
         db.execute(
-          "CREATE TABLE $userTableName ($userIdColumnName INTEGER AUTO_INCREMENT PRIMARY KEY, $userNameColumnName VARCHAR(255) NOT NULL, $userEmailColumnName VARCHAR(255) NOT NULL, $userPasswordColumnName VARCHAR(255) NOT NULL, $userCreateByColumnName VARCHAR(255) NOT NULL, $userCreateAtColumnName DATE NOUT NULL, $userUpdateByColumnName VARCHAR(255) NOT NULL, $userUpdateAtColumnName DATE NOT NULL)",
+          "CREATE TABLE $userTableName ("
+          "$userIdColumnName INTEGER PRIMARY KEY,"
+          "$userNameColumnName VARCHAR(255) NOT NULL,"
+          "$userEmailColumnName VARCHAR(255) NOT NULL,"
+          "$userPasswordColumnName VARCHAR(255) NOT NULL,"
+          "$userCreateByColumnName VARCHAR(255) NOT NULL,"
+          "$userCreateAtColumnName TEXT NOT NULL,"
+          "$userUpdateByColumnName VARCHAR(255) NOT NULL,"
+          "$userUpdateAtColumnName TEXT NOT NULL"
+          ")",
         );
 
         db.execute(
-          "CREATE TABLE $placeTableName ($placeIdColumnName INTEGER AUTO_INCEREMENT PRIMARY KEY, $placeNameColumnName VARCHAR(255) NOT NULL, $placeImageColumnName TEXT NOT NULL, $placeAddressColumnName TEXT NOT NULL, $placeCityColumnName VARCHAR(255) NOT NULL, $placeCountryColumnName VARCHAR(255) NOT NULL, $placeRatingColumnName INTEGER NOT NULL, $placePriceColumnName INTEGER NOT NULL, $placeCreateByColumnName VARCHAR(255) NOT NULL, $placeCreateAtColumnName DATE NOUT NULL, $placeUpdateByColumnName VARCHAR(255) NOT NULL, $placeUpdateAtColumnName DATE NOT NULL)",
+          "CREATE TABLE $placeTableName ("
+          "$placeIdColumnName INTEGER PRIMARY KEY, "
+          "$placeNameColumnName VARCHAR(255) NOT NULL, "
+          "$placeImageColumnName TEXT NOT NULL, "
+          "$placeAddressColumnName TEXT NOT NULL, "
+          "$placeCityColumnName VARCHAR(255) NOT NULL, "
+          "$placeCountryColumnName VARCHAR(255) NOT NULL, "
+          "$placeRatingColumnName INTEGER NOT NULL, "
+          "$placePriceColumnName INTEGER NOT NULL, "
+          "$placeCreateByColumnName VARCHAR(255) NOT NULL, "
+          "$placeCreateAtColumnName TEXT NOT NULL, "
+          "$placeUpdateByColumnName VARCHAR(255) NOT NULL, "
+          "$placeUpdateAtColumnName TEXT NOT NULL"
+          ")",
         );
 
         db.execute(
-          "CREATE TABLE $historyTableName ($historyIdColumnName INTEGER AUTO_INCREMENT PRIMARY KEY, $historyUserIdColumnName INTEGER NOT NULL FOREIGN KEY REFERENCES user(id), $historyPlaceIdColumnName INTEGER NOT NULL FOREIGN KEY REFERENCES place(id), $historyCreateByColumnName VARCHAR(255) NOT NULL, $historyCreateAtColumnName DATE NOUT NULL, $historyUpdateByColumnName VARCHAR(255) NOT NULL, $historyUpdateAtColumnName DATE NOT NULL)",
+          "CREATE TABLE $historyTableName ("
+          "$historyIdColumnName INTEGER PRIMARY KEY,"
+          "$historyUserIdColumnName INTEGER NOT NULL,"
+          "$historyPlaceIdColumnName INTEGER NOT NULL,"
+          "$historyCreateByColumnName VARCHAR(255) NOT NULL,"
+          "$historyCreateAtColumnName TEXT NOT NULL,"
+          "$historyUpdateByColumnName VARCHAR(255) NOT NULL,"
+          "$historyUpdateAtColumnName TEXT NOT NULL,"
+          "FOREIGN KEY($historyUserIdColumnName) REFERENCES user($userIdColumnName) ON DELETE NO ACTION ON UPDATE NO ACTION,"
+          "FOREIGN KEY($historyPlaceIdColumnName) REFERENCES place($placeIdColumnName) ON DELETE NO ACTION ON UPDATE NO ACTION,"
+          ")",
         );
 
         db.execute(
-          "CREATE TABLE $favTableName ($favIdColumnName INTEGER AUTO_INCREMENT PRIMARY KEY, $favUserIdColumnName INTEGER NOT NULL FOREIGN KEY REFERENCES user(id), $favPlaceIdColumnName INTEGER NOT NULL FOREIGN KEY REFERENCES place(id), $favCreateByColumnName VARCHAR(255) NOT NULL, $favCreateAtColumnName DATE NOUT NULL, $favUpdateByColumnName VARCHAR(255) NOT NULL, $favUpdateAtColumnName DATE NOT NULL)",
+          "CREATE TABLE $favTableName ("
+          "$favIdColumnName INTEGER PRIMARY KEY,"
+          "$favUserIdColumnName INTEGER NOT NULL,"
+          "$favPlaceIdColumnName INTEGER NOT NULL,"
+          "$favCreateByColumnName VARCHAR(255) NOT NULL,"
+          "$favCreateAtColumnName TEXT NOT NULL,"
+          "$favUpdateByColumnName VARCHAR(255) NOT NULL,"
+          "$favUpdateAtColumnName TEXT NOT NULL,"
+          "FOREIGN KEY($historyUserIdColumnName) REFERENCES user($userIdColumnName) ON DELETE NO ACTION ON UPDATE NO ACTION,"
+          "FOREIGN KEY($historyPlaceIdColumnName) REFERENCES place($placeIdColumnName) ON DELETE NO ACTION ON UPDATE NO ACTION,"
+          ")",
         );
       },
     );
     return database;
+  }
+
+  Future<void> deleteDatabase(String path) async {
+    final databaseDirPath = await getDatabasesPath();
+    final databasePath = join(databaseDirPath, "master.db");
+    databaseFactory.deleteDatabase(databasePath);
+  }
+
+  void checkTableStructure() async {
+    final db = await database;
+
+    final userTableInfo =
+        await db.rawQuery("PRAGMA table_info($userTableName)");
+    final placeTableInfo =
+        await db.rawQuery('PRAGMA table_info($placeTableName)');
+    final historyTableInfo =
+        await db.rawQuery("PRAGMA table_info($historyTableName)");
+    final favTableInfo = await db.rawQuery("PRAGMA table_info($favTableName)");
+    if (kDebugMode) {
+      print("User Table Info: $userTableInfo");
+      print("Place Table Info: $placeTableInfo");
+      print("History Table Info: $historyTableInfo");
+      print("Favourite Table Info: $favTableInfo");
+    }
   }
 }
