@@ -8,9 +8,9 @@ class PlaceModel {
   final int rating;
   final int price;
   final String createBy;
-  final DateTime createAt;
+  final String createAt;
   final String updateBy;
-  final DateTime updateAt;
+  final String updateAt;
 
   PlaceModel({
     required this.id,
