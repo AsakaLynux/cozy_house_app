@@ -23,7 +23,7 @@ class RecommendedTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 329,
+      width: 330,
       height: 110,
       margin: EdgeInsets.only(bottom: 30),
       child: Row(
@@ -35,7 +35,11 @@ class RecommendedTile extends StatelessWidget {
               height: 110,
               child: Stack(
                 children: [
-                  Image.asset(imageUrl),
+                  Container(
+                    decoration: BoxDecoration(color: greyColor),
+                  ),
+                  // Image.network(imageUrl, fit: BoxFit.cover),
+                  // Image.asset(imageUrl),
                   Align(
                     alignment: Alignment.topRight,
                     child: Container(
@@ -65,31 +69,36 @@ class RecommendedTile extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 20),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                tileName,
-                style: blackTextStyle.copyWith(fontSize: 18),
-              ),
-              RichText(
-                text: TextSpan(
-                  text: "\$$price",
-                  style: purpleTextStyle.copyWith(fontSize: 18),
-                  children: [
-                    TextSpan(
-                      text: " / month",
-                      style: greyTextStyle.copyWith(fontSize: 18),
-                    ),
-                  ],
+          SizedBox(
+            width: 180,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  tileName,
+                  style: blackTextStyle.copyWith(fontSize: 18),
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                "$city, $country",
-                style: greyTextStyle.copyWith(fontSize: 16),
-              ),
-            ],
+                RichText(
+                  text: TextSpan(
+                    text: "\$$price",
+                    style: purpleTextStyle.copyWith(fontSize: 18),
+                    children: [
+                      TextSpan(
+                        text: " / month",
+                        style: greyTextStyle.copyWith(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  "$city, $country",
+                  style: greyTextStyle.copyWith(fontSize: 16),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ],
       ),
