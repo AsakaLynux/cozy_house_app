@@ -26,9 +26,9 @@ class PlaceService {
             rating: e["rating"] as int,
             price: e["price"] as int,
             createBy: e["createBy"] as String,
-            createAt: e["createAt"] as DateTime,
+            createAt: e["createAt"] as String,
             updateBy: e["updateBy"] as String,
-            updateAt: e["updateAt"] as DateTime,
+            updateAt: e["updateAt"] as String,
           ),
         )
         .toList();
@@ -60,9 +60,9 @@ class PlaceService {
             rating: e["rating"] as int,
             price: e["price"] as int,
             createBy: e["createBy"] as String,
-            createAt: e["createAt"] as DateTime,
+            createAt: e["createAt"] as String,
             updateBy: e["updateBy"] as String,
-            updateAt: e["updateAt"] as DateTime,
+            updateAt: e["updateAt"] as String,
           ),
         )
         .toList()
