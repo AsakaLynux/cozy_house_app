@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../domain/models/place_model.dart';
+import '../domain/services/place_service.dart';
 import '../routing/routes.dart';
 import 'core/themes/colors.dart';
 import 'core/themes/dimens.dart';
@@ -8,13 +12,36 @@ import 'core/themes/fonts.dart';
 import 'core/widget/custom_button.dart';
 
 class HouseDetailScreen extends StatefulWidget {
-  const HouseDetailScreen({super.key});
+  final int placeId;
+  const HouseDetailScreen({
+    super.key,
+    required this.placeId,
+  });
 
   @override
   State<HouseDetailScreen> createState() => _HouseDetailScreenState();
 }
 
 class _HouseDetailScreenState extends State<HouseDetailScreen> {
+  late Future<PlaceModel> futurePlace;
+  PlaceService placeService = PlaceService();
+
+  @override
+  void initState() {
+    futurePlace = getDelayedPlaceList();
+    super.initState();
+  }
+
+  Future<PlaceModel> getDelayedPlaceList() async {
+    await Future.delayed(Duration(seconds: 2));
+    return placeService.getPlace(1);
+  }
+
+  int randomQtyFurniture() {
+    int value = Random().nextInt(5) + 1;
+    return value;
+  }
+
   bool isLoveButtonClick = false;
   @override
   Widget build(BuildContext context) {
@@ -48,9 +75,9 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                iconDetail("icon_kitchen", 2, "kitchen"),
-                iconDetail("icon_bedroom", 3, "bedroom"),
-                iconDetail("icon_cupboard", 3, "big drawer"),
+                iconDetail("icon_kitchen", randomQtyFurniture(), "kitchen"),
+                iconDetail("icon_bedroom", randomQtyFurniture(), "bedroom"),
+                iconDetail("icon_cupboard", randomQtyFurniture(), "big drawer"),
               ],
             )
           ],
@@ -58,7 +85,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
       );
     }
 
-    Widget detailTitle() {
+    Widget detailTitle(AsyncSnapshot<PlaceModel> snapshot) {
       return SizedBox(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,13 +94,13 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Kuretakeso Hott",
+                  snapshot.data!.name,
                   style: blackTextStyle.copyWith(fontSize: 22),
                 ),
                 const SizedBox(height: 2),
                 RichText(
                   text: TextSpan(
-                    text: "\$52",
+                    text: "\$${snapshot.data!.price}",
                     style: purpleTextStyle.copyWith(fontSize: 16),
                     children: [
                       TextSpan(
@@ -86,35 +113,28 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
               ],
             ),
             SizedBox(
-              child: Row(
-                children: [
-                  Image.asset(
-                    "assets/icon_star.png",
-                    width: 20,
-                    height: 20,
-                  ),
-                  Image.asset(
-                    "assets/icon_star.png",
-                    width: 20,
-                    height: 20,
-                  ),
-                  Image.asset(
-                    "assets/icon_star.png",
-                    width: 20,
-                    height: 20,
-                  ),
-                  Image.asset(
-                    "assets/icon_star.png",
-                    width: 20,
-                    height: 20,
-                  ),
-                  Image.asset(
-                    "assets/icon_star.png",
-                    width: 20,
-                    height: 20,
-                    color: greyColor,
-                  ),
-                ],
+              width: 100,
+              height: 20,
+              child: ListView.builder(
+                itemCount: 5,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  final int fav = snapshot.data!.rating;
+                  if (fav > index) {
+                    return Image.asset(
+                      "assets/icon_star.png",
+                      width: 20,
+                      height: 20,
+                    );
+                  } else {
+                    return Image.asset(
+                      "assets/icon_star.png",
+                      width: 20,
+                      height: 20,
+                      color: greyColor,
+                    );
+                  }
+                },
               ),
             )
           ],
@@ -155,7 +175,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
       );
     }
 
-    Widget location() {
+    Widget location(AsyncSnapshot<PlaceModel> snapshot) {
       return SizedBox(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,8 +192,8 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Jln. Kappan Sukses No. 20", style: greyTextStyle),
-                      Text("Palembang", style: greyTextStyle),
+                      Text(snapshot.data!.address, style: greyTextStyle),
+                      Text(snapshot.data!.city, style: greyTextStyle),
                     ],
                   ),
                   Image.asset(
@@ -228,40 +248,62 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
     }
 
     return Scaffold(
-      body: Stack(
-        children: [
-          Image.asset(
-            "assets/city3.png",
-            // width: 375,
-            height: 350,
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              width: double.infinity,
-              height: 554,
-              padding: EdgeInsets.symmetric(
-                  horizontal: Dimens.paddingHorizontal, vertical: 30),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(24),
-                  topRight: Radius.circular(24),
+      body: FutureBuilder(
+        future: futurePlace,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(
+                backgroundColor: whiteColor,
+                color: purpleColor,
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return const Text("No Data");
+          } else {
+            return Stack(
+              children: [
+                // Image.asset(
+                //   "assets/city3.png",
+                //   height: 350,
+                // ),
+                Image.network(
+                  snapshot.data!.image,
+                  height: 350,
+                  fit: BoxFit.cover,
                 ),
-                color: whiteColor,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  detailTitle(),
-                  mainFacilities(),
-                  photos(),
-                  location(),
-                  bottomButton(),
-                ],
-              ),
-            ),
-          )
-        ],
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    width: double.infinity,
+                    height: 554,
+                    padding: EdgeInsets.symmetric(
+                        horizontal: Dimens.paddingHorizontal, vertical: 30),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24),
+                      ),
+                      color: whiteColor,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        detailTitle(snapshot),
+                        mainFacilities(),
+                        photos(),
+                        location(snapshot),
+                        bottomButton(),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            );
+          }
+        },
       ),
     );
   }

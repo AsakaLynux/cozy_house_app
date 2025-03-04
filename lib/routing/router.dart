@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../view/house_detail_screen.dart';
@@ -19,7 +20,25 @@ GoRouter router() => GoRouter(
           routes: [
             GoRoute(
               path: Routes.houseDetail,
-              builder: (context, state) => HouseDetailScreen(),
+              pageBuilder: (context, state) {
+                final id = int.parse(state.pathParameters["id"]!);
+                return CustomTransitionPage(
+                  key: state.pageKey,
+                  child: HouseDetailScreen(placeId: id),
+                  transitionDuration: const Duration(milliseconds: 300),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    // Change the opacity of the screen using a Curve based on the the animation's
+                    // value
+                    return FadeTransition(
+                      opacity:
+                          CurveTween(curve: Curves.linear).animate(animation),
+                      child: child,
+                    );
+                  },
+                );
+              },
+              // builder: (context, state) => HouseDetailScreen(),
             ),
             // GoRoute(
             //   path: Routes.home,

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'domain/services/database_service.dart';
+import 'domain/services/place_service.dart';
 import 'routing/router.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // deleteAllData();
+  initializeData();
+  // checkDatabase();
   runApp(const MyApp());
 }
 
@@ -17,4 +23,20 @@ class MyApp extends StatelessWidget {
       routerConfig: router(),
     );
   }
+}
+
+void initializeData() {
+  PlaceService placeService = PlaceService();
+  placeService.insertDummyPlace();
+}
+
+void deleteAllData() {
+  PlaceService placeService = PlaceService();
+  placeService.deleteAllPlace();
+}
+
+void checkDatabase() {
+  DatabaseService databaseService = DatabaseService.intance;
+  databaseService.deleteDatabase;
+  databaseService.checkTableStructure();
 }

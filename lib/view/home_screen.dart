@@ -1,15 +1,45 @@
+import 'dart:async';
+
+import 'package:cozy_house_app/view/core/themes/colors.dart';
 import 'package:cozy_house_app/view/core/themes/fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../domain/models/place_model.dart';
+import '../domain/services/place_service.dart';
 import '../routing/routes.dart';
 import 'core/themes/dimens.dart';
 import 'core/widget/popular_card.dart';
 import 'core/widget/recommended_tile.dart';
 import 'core/widget/tips_tile.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late Future<List<PlaceModel>> futurePlacelist;
+  PlaceService placeService = PlaceService();
+
+  @override
+  void initState() {
+    futurePlacelist = getDelayedPlaceList();
+    super.initState();
+  }
+
+  Future<List<PlaceModel>> getDelayedPlaceList() async {
+    await Future.delayed(Duration(seconds: 2));
+    return placeService.getPlaceList();
+  }
+
+  Future<void> refreshData() async {
+    setState(() {
+      futurePlacelist = getDelayedPlaceList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,24 +112,43 @@ class HomeScreen extends StatelessWidget {
               style: blackTextStyle.copyWith(fontSize: 16),
             ),
             const SizedBox(height: 16),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    context.go("${Routes.main}/${Routes.houseDetail}");
-                  },
-                  child: RecommendedTile(
-                    tileName: "Kuretakeso Hott",
-                    imageUrl: "assets/space1.png",
-                    rating: 4,
-                    price: 52,
-                    city: "Bandung",
-                    country: "Indonesia",
-                  ),
-                );
+            FutureBuilder(
+              future: futurePlacelist,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: whiteColor,
+                      color: purpleColor,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text("Error: ${snapshot.error}");
+                } else if (!snapshot.hasData || snapshot.data == null) {
+                  return const Text("No Data");
+                } else {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          context.go(
+                              "${Routes.main}/${Routes.houseDetail}/${snapshot.data![index].id}");
+                        },
+                        child: RecommendedTile(
+                          tileName: snapshot.data![index].name,
+                          imageUrl: snapshot.data![index].image,
+                          rating: snapshot.data![index].rating,
+                          price: snapshot.data![index].price,
+                          city: snapshot.data![index].city,
+                          country: snapshot.data![index].country,
+                        ),
+                      );
+                    },
+                  );
+                }
               },
             ),
           ],
@@ -135,25 +184,26 @@ class HomeScreen extends StatelessWidget {
     }
 
     return SafeArea(
-      child: Stack(
-        children: [
-          SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                headerHome(),
-                popularCities(),
-                const SizedBox(height: 20),
-                recommendedSpace(),
-                const SizedBox(height: 20),
-                tipsGuidance(),
-                const SizedBox(height: 120),
-              ],
-            ),
+      child: RefreshIndicator(
+        backgroundColor: whiteColor,
+        color: purpleColor,
+        onRefresh: () => refreshData(),
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              headerHome(),
+              popularCities(),
+              const SizedBox(height: 20),
+              recommendedSpace(),
+              const SizedBox(height: 20),
+              tipsGuidance(),
+              const SizedBox(height: 120),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
