@@ -34,7 +34,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
 
   Future<PlaceModel> getDelayedPlaceList() async {
     await Future.delayed(Duration(seconds: 2));
-    return placeService.getPlace(1);
+    return placeService.getPlace(widget.placeId);
   }
 
   int randomQtyFurniture() {

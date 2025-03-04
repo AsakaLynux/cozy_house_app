@@ -31,8 +31,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<List<PlaceModel>> getDelayedPlaceList() async {
-    await Future.delayed(Duration(seconds: 2));
-    return placeService.getPlaceList();
+    final dataFuture = placeService.getPlaceList();
+
+    // await Future.delayed(const Duration(seconds: 2));
+    final data = await dataFuture;
+    final imageFutures = data.map((place) {
+      return precacheImage(NetworkImage(place.image), context);
+    }).toList();
+
+    await Future.wait(imageFutures);
+
+    return data;
   }
 
   Future<void> refreshData() async {
@@ -113,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 16),
             FutureBuilder(
-              future: futurePlacelist,
+              future: futurePlacelist, // Has function to delayed for 2 seconds
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
@@ -134,8 +143,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
-                          context.go(
-                              "${Routes.main}/${Routes.houseDetail}/${snapshot.data![index].id}");
+                          context
+                              .go("${Routes.main}/${snapshot.data![index].id}");
                         },
                         child: RecommendedTile(
                           tileName: snapshot.data![index].name,
