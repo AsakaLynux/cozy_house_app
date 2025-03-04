@@ -35,11 +35,11 @@ class RecommendedTile extends StatelessWidget {
               height: 110,
               child: Stack(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(color: greyColor),
-                  ),
-                  // Image.network(imageUrl, fit: BoxFit.cover),
-                  // Image.asset(imageUrl),
+                  // Container(
+                  //   decoration: BoxDecoration(color: greyColor),
+                  // ),
+                  Image.network(imageUrl, fit: BoxFit.fill),
+                  // Image.asset("assets/photo1.png"),
                   Align(
                     alignment: Alignment.topRight,
                     child: Container(
