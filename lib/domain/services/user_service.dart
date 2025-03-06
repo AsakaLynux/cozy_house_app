@@ -3,12 +3,41 @@ import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
 import 'database_service.dart';
 
-DatabaseService databaseService = DatabaseService.intance;
-
 class UserService {
-  Future<UserModel> getUser() async {
+  DatabaseService databaseService = DatabaseService.intance;
+  Future<List<UserModel>> getUserList() async {
     final db = await databaseService.database;
     final data = await db.query(userTableName);
+    if (kDebugMode) {
+      print("getUserList(): $data");
+    }
+    final userData = data
+        .map(
+          (e) => UserModel(
+            id: e["id"] as int,
+            userName: e["userName"] as String,
+            email: e["email"] as String,
+            password: e["password"] as String,
+            createBy: e["createBy"] as String,
+            createAt: e["createAt"] as DateTime,
+            updateBy: e["updateBy"] as String,
+            updateAt: e["updateAt"] as DateTime,
+          ),
+        )
+        .toList();
+
+    return userData;
+  }
+
+  Future<UserModel> getUser(int userId) async {
+    final db = await databaseService.database;
+    final data = await db.query(
+      userTableName,
+      where: "$userIdColumnName = ?",
+      whereArgs: [
+        userId,
+      ],
+    );
     if (kDebugMode) {
       print("getUser(): $data");
     }
@@ -25,8 +54,8 @@ class UserService {
             updateAt: e["updateAt"] as DateTime,
           ),
         )
-        .toList()
         .first;
+
     return userData;
   }
 
