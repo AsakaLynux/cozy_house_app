@@ -1,16 +1,22 @@
 import 'package:flutter/foundation.dart';
 
+import '../../data/user_data.dart';
 import '../models/user_model.dart';
 import 'database_service.dart';
 
 class UserService {
   DatabaseService databaseService = DatabaseService.intance;
+
+  void showUser(String functionName, List<Map<String, Object?>> data) {
+    if (kDebugMode) {
+      print("$functionName: $data");
+    }
+  }
+
   Future<List<UserModel>> getUserList() async {
     final db = await databaseService.database;
     final data = await db.query(userTableName);
-    if (kDebugMode) {
-      print("getUserList(): $data");
-    }
+
     final userData = data
         .map(
           (e) => UserModel(
@@ -26,6 +32,8 @@ class UserService {
         )
         .toList();
 
+    showUser("getUserList()", data);
+
     return userData;
   }
 
@@ -38,9 +46,7 @@ class UserService {
         userId,
       ],
     );
-    if (kDebugMode) {
-      print("getUser(): $data");
-    }
+
     final userData = data
         .map(
           (e) => UserModel(
@@ -56,6 +62,8 @@ class UserService {
         )
         .first;
 
+    showUser("getUser()", data);
+
     return userData;
   }
 
@@ -65,28 +73,21 @@ class UserService {
     String password,
   ) async {
     final db = await databaseService.database;
-    final addData = await db.insert(
+    await db.insert(
       userTableName,
       {
         userNameColumnName: userName,
         userEmailColumnName: email,
         userPasswordColumnName: password,
         userCreateByColumnName: userName,
-        userCreateAtColumnName: DateTime.now(),
+        userCreateAtColumnName: DateTime.now().toIso8601String(),
         userUpdateByColumnName: userName,
-        userUpdateAtColumnName: DateTime.now(),
+        userUpdateAtColumnName: DateTime.now().toIso8601String(),
       },
     );
 
-    if (addData == 1) {
-      if (kDebugMode) {
-        print("addUser(): Delete User successed");
-      }
-    } else {
-      if (kDebugMode) {
-        print("addUser(): Delete User Failed");
-      }
-    }
+    final data = await db.query(userTableName);
+    showUser("addUser()", data);
   }
 
   void updateUser(
@@ -117,10 +118,9 @@ class UserService {
             updateAt: e["updateAt"] as DateTime,
           ),
         )
-        .toList()
         .first;
 
-    final updateData = await db.update(
+    await db.update(
       userTableName,
       {
         userNameColumnName: userName.isEmpty ? user.userName : userName,
@@ -136,37 +136,112 @@ class UserService {
         id,
       ],
     );
-    if (updateData == 1) {
-      if (kDebugMode) {
-        print("updateUser(): Delete User successed");
-        print("updateUser(): $userData");
-      }
-    } else {
-      if (kDebugMode) {
-        print("updateUser(): Delete User Failed");
-      }
-    }
+
+    showUser("updateUser()", userData);
   }
 
   void deleteUser(
     int id,
   ) async {
     final db = await databaseService.database;
-    final deleteData = await db.delete(
+    await db.delete(
       userTableName,
       where: "$userIdColumnName = ?",
       whereArgs: [
         id,
       ],
     );
-    if (deleteData == 1) {
+  }
+
+  void inserDummyUser() async {
+    final db = await databaseService.database;
+    final data = await db.query(placeTableName);
+
+    if (data.isEmpty) {
       if (kDebugMode) {
-        print("deleteUser(): Delete Place successed");
+        print("insertDummyUser(): User table data is empty, insert the data:");
+      }
+      for (UserModel userData in listUser) {
+        await db.insert(
+          userTableName,
+          {
+            userNameColumnName: userData.userName,
+            userEmailColumnName: userData.email,
+            userPasswordColumnName: userData.password,
+            userCreateByColumnName: userData.createBy,
+            userCreateAtColumnName: userData.createAt,
+            userUpdateByColumnName: userData.updateBy,
+            userUpdateAtColumnName: userData.updateAt,
+          },
+        );
+      }
+      if (kDebugMode) {
+        print("inserDummyUser(): Insert data success");
       }
     } else {
       if (kDebugMode) {
-        print("deleteUser(): Delete Place Failed");
+        print("inserDummyUser(): User table data already exist");
       }
     }
+  }
+
+  Future<String> userLogin(
+      String userName, String email, String password) async {
+    final db = await databaseService.database;
+    final data = await db.query(
+      userTableName,
+      where: "$userNameColumnName LIKE ? AND $userPasswordColumnName LIKE ?",
+      whereArgs: [
+        userName,
+        password,
+      ],
+    );
+    // final user = data
+    //     .map(
+    //       (e) => UserModel(
+    //         id: e["id"] as int,
+    //         userName: e["userName"] as String,
+    //         email: e["email"] as String,
+    //         password: e["password"] as String,
+    //         createBy: e["createBy"] as String,
+    //         createAt: e["createAt"] as DateTime,
+    //         updateBy: e["updateBy"] as String,
+    //         updateAt: e["updateAt"] as DateTime,
+    //       ),
+    //     )
+    //     .first;
+    if (data.isNotEmpty) {
+      return "Login Succesful";
+    }
+    return "Login Failed";
+  }
+
+  Future<String> userRegister(
+      String userName, String email, String password) async {
+    final db = await databaseService.database;
+    final existUser = await db.query(
+      userTableName,
+      where: "$userNameColumnName LIKE ? AND $userEmailColumnName LIKE ?",
+      whereArgs: [
+        userName,
+        email,
+      ],
+    );
+    if (existUser.isEmpty) {
+      await db.insert(
+        userTableName,
+        {
+          userNameColumnName: userName,
+          userEmailColumnName: email,
+          userPasswordColumnName: password,
+          userCreateByColumnName: userName,
+          userCreateAtColumnName: DateTime.now().toIso8601String(),
+          userUpdateByColumnName: userName,
+          userUpdateAtColumnName: DateTime.now().toIso8601String(),
+        },
+      );
+      return "Register Succesful";
+    }
+    return "Register Failed";
   }
 }
