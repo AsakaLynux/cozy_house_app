@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../data/user_data.dart';
 import '../models/user_model.dart';
 import 'database_service.dart';
+import 'shared_services.dart';
 
 class UserService {
   DatabaseService databaseService = DatabaseService.intance;
@@ -185,8 +186,7 @@ class UserService {
     }
   }
 
-  Future<String> userLogin(
-      String userName, String email, String password) async {
+  Future<String> userLogin(String userName, String password) async {
     final db = await databaseService.database;
     final data = await db.query(
       userTableName,
@@ -196,21 +196,22 @@ class UserService {
         password,
       ],
     );
-    // final user = data
-    //     .map(
-    //       (e) => UserModel(
-    //         id: e["id"] as int,
-    //         userName: e["userName"] as String,
-    //         email: e["email"] as String,
-    //         password: e["password"] as String,
-    //         createBy: e["createBy"] as String,
-    //         createAt: e["createAt"] as DateTime,
-    //         updateBy: e["updateBy"] as String,
-    //         updateAt: e["updateAt"] as DateTime,
-    //       ),
-    //     )
-    //     .first;
+    final user = data
+        .map(
+          (e) => UserModel(
+            id: e["id"] as int,
+            userName: e["userName"] as String,
+            email: e["email"] as String,
+            password: e["password"] as String,
+            createBy: e["createBy"] as String,
+            createAt: e["createAt"] as DateTime,
+            updateBy: e["updateBy"] as String,
+            updateAt: e["updateAt"] as DateTime,
+          ),
+        )
+        .first;
     if (data.isNotEmpty) {
+      SharedServices().cacheUserInfo(user.id);
       return "Login Succesful";
     }
     return "Login Failed";

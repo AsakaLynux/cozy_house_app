@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../domain/services/user_service.dart';
+import '../routing/routes.dart';
 import 'core/themes/colors.dart';
 import 'core/widget/custom_button.dart';
 import 'core/widget/custom_text_field.dart';
@@ -67,8 +70,22 @@ class _LoginScreenState extends State<LoginScreen> {
                     CustomButton(
                       buttonText: "Login",
                       buttonWidth: 212,
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {}
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          final data = await UserService().userLogin(
+                              usernameController.value.text,
+                              passwordController.value.text);
+                          final snackbar = SnackBar(content: Text(data));
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackbar);
+                          }
+                          if (data.contains("Login Succesful")) {
+                            if (context.mounted) {
+                              context.go(Routes.main);
+                            }
+                          }
+                        }
                       },
                     ),
                   ],
