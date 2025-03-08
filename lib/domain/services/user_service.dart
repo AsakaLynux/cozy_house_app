@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/user_data.dart';
 import '../models/user_model.dart';
@@ -26,9 +27,9 @@ class UserService {
             email: e["email"] as String,
             password: e["password"] as String,
             createBy: e["createBy"] as String,
-            createAt: e["createAt"] as DateTime,
+            createAt: e["createAt"] as String,
             updateBy: e["updateBy"] as String,
-            updateAt: e["updateAt"] as DateTime,
+            updateAt: e["updateAt"] as String,
           ),
         )
         .toList();
@@ -38,34 +39,37 @@ class UserService {
     return userData;
   }
 
-  Future<UserModel> getUser(int userId) async {
+  Future<UserModel?> getUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int? userId = prefs.getInt("userId");
     final db = await databaseService.database;
-    final data = await db.query(
-      userTableName,
-      where: "$userIdColumnName = ?",
-      whereArgs: [
-        userId,
-      ],
-    );
+    if (userId != null) {
+      final data = await db.query(
+        userTableName,
+        where: "$userIdColumnName = ?",
+        whereArgs: [
+          userId,
+        ],
+      );
+      final userData = data
+          .map(
+            (e) => UserModel(
+              id: e["id"] as int,
+              userName: e["userName"] as String,
+              email: e["email"] as String,
+              password: e["password"] as String,
+              createBy: e["createBy"] as String,
+              createAt: e["createAt"] as String,
+              updateBy: e["updateBy"] as String,
+              updateAt: e["updateAt"] as String,
+            ),
+          )
+          .first;
+      showUser("getUser()", data);
+      return userData;
+    }
 
-    final userData = data
-        .map(
-          (e) => UserModel(
-            id: e["id"] as int,
-            userName: e["userName"] as String,
-            email: e["email"] as String,
-            password: e["password"] as String,
-            createBy: e["createBy"] as String,
-            createAt: e["createAt"] as DateTime,
-            updateBy: e["updateBy"] as String,
-            updateAt: e["updateAt"] as DateTime,
-          ),
-        )
-        .first;
-
-    showUser("getUser()", data);
-
-    return userData;
+    return null;
   }
 
   void addUser(
@@ -114,9 +118,9 @@ class UserService {
             email: e["email"] as String,
             password: e["password"] as String,
             createBy: e["createBy"] as String,
-            createAt: e["createAt"] as DateTime,
+            createAt: e["createAt"] as String,
             updateBy: e["updateBy"] as String,
-            updateAt: e["updateAt"] as DateTime,
+            updateAt: e["updateAt"] as String,
           ),
         )
         .first;
@@ -154,9 +158,9 @@ class UserService {
     );
   }
 
-  void inserDummyUser() async {
+  void insertDummyUser() async {
     final db = await databaseService.database;
-    final data = await db.query(placeTableName);
+    final data = await db.query(userTableName);
 
     if (data.isEmpty) {
       if (kDebugMode) {
@@ -184,6 +188,7 @@ class UserService {
         print("inserDummyUser(): User table data already exist");
       }
     }
+    showUser("insertDummyUser()", data);
   }
 
   Future<String> userLogin(String userName, String password) async {
@@ -196,21 +201,21 @@ class UserService {
         password,
       ],
     );
-    final user = data
-        .map(
-          (e) => UserModel(
-            id: e["id"] as int,
-            userName: e["userName"] as String,
-            email: e["email"] as String,
-            password: e["password"] as String,
-            createBy: e["createBy"] as String,
-            createAt: e["createAt"] as DateTime,
-            updateBy: e["updateBy"] as String,
-            updateAt: e["updateAt"] as DateTime,
-          ),
-        )
-        .first;
     if (data.isNotEmpty) {
+      final user = data
+          .map(
+            (e) => UserModel(
+              id: e["id"] as int,
+              userName: e["userName"] as String,
+              email: e["email"] as String,
+              password: e["password"] as String,
+              createBy: e["createBy"] as String,
+              createAt: e["createAt"] as String,
+              updateBy: e["updateBy"] as String,
+              updateAt: e["updateAt"] as String,
+            ),
+          )
+          .first;
       SharedServices().cacheUserInfo(user.id);
       return "Login Succesful";
     }
