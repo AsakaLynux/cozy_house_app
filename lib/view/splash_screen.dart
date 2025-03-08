@@ -40,7 +40,7 @@ class SplashScreen extends StatelessWidget {
                   CustomButton(
                     buttonText: "Explore Now",
                     buttonWidth: 210,
-                    onPressed: () => context.go(Routes.main),
+                    onPressed: () => context.go(Routes.login),
                   ),
                 ],
               ),

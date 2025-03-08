@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../domain/models/place_model.dart';
+import '../domain/models/user_model.dart';
 import '../domain/services/place_service.dart';
 import '../routing/routes.dart';
 import 'core/themes/dimens.dart';
@@ -14,7 +15,11 @@ import 'core/widget/recommended_tile.dart';
 import 'core/widget/tips_tile.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final UserModel? userModel;
+  const HomeScreen({
+    super.key,
+    this.userModel,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();

@@ -6,8 +6,7 @@
 
 
 - Testing
-    - Create function login and register feature in userservice
-    - Create shared services to share user information between page
+    
 
 
 
@@ -20,6 +19,9 @@
 
 
 - Done
+    - Add login and shared function to login screen
+    - Create function login and register feature in userservice
+    - Create shared services to share user information between page
     - Develop house detail UI
     - Develop house details
     - Make popular cities widget in home screen
