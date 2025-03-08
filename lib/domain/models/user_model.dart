@@ -4,9 +4,9 @@ class UserModel {
   final String email;
   final String password;
   final String createBy;
-  final DateTime createAt;
+  final String createAt;
   final String updateBy;
-  final DateTime updateAt;
+  final String updateAt;
 
   UserModel({
     required this.id,
