@@ -109,8 +109,8 @@ class DatabaseService {
           "$historyCreateAtColumnName TEXT NOT NULL,"
           "$historyUpdateByColumnName VARCHAR(255) NOT NULL,"
           "$historyUpdateAtColumnName TEXT NOT NULL,"
-          "FOREIGN KEY($historyUserIdColumnName) REFERENCES user($userIdColumnName) ON DELETE NO ACTION ON UPDATE NO ACTION,"
-          "FOREIGN KEY($historyPlaceIdColumnName) REFERENCES place($placeIdColumnName) ON DELETE NO ACTION ON UPDATE NO ACTION,"
+          "FOREIGN KEY ($historyUserIdColumnName) REFERENCES user ($userIdColumnName) ON DELETE NO ACTION ON UPDATE NO ACTION,"
+          "FOREIGN KEY ($historyPlaceIdColumnName) REFERENCES place ($placeIdColumnName) ON DELETE NO ACTION ON UPDATE NO ACTION"
           ")",
         );
 
@@ -123,8 +123,8 @@ class DatabaseService {
           "$favCreateAtColumnName TEXT NOT NULL,"
           "$favUpdateByColumnName VARCHAR(255) NOT NULL,"
           "$favUpdateAtColumnName TEXT NOT NULL,"
-          "FOREIGN KEY($historyUserIdColumnName) REFERENCES user($userIdColumnName) ON DELETE NO ACTION ON UPDATE NO ACTION,"
-          "FOREIGN KEY($historyPlaceIdColumnName) REFERENCES place($placeIdColumnName) ON DELETE NO ACTION ON UPDATE NO ACTION,"
+          "FOREIGN KEY ($historyUserIdColumnName) REFERENCES user ($userIdColumnName) ON DELETE NO ACTION ON UPDATE NO ACTION,"
+          "FOREIGN KEY ($historyPlaceIdColumnName) REFERENCES place ($placeIdColumnName) ON DELETE NO ACTION ON UPDATE NO ACTION"
           ")",
         );
       },
@@ -132,7 +132,10 @@ class DatabaseService {
     return database;
   }
 
-  Future<void> deleteDatabase(String path) async {
+  Future<void> deleteDatabase() async {
+    if (kDebugMode) {
+      print("delete databse");
+    }
     final databaseDirPath = await getDatabasesPath();
     final databasePath = join(databaseDirPath, "master.db");
     databaseFactory.deleteDatabase(databasePath);
