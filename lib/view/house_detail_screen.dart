@@ -1,12 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import '../domain/models/place_model.dart';
-import '../domain/services/history_services.dart';
 import '../domain/services/place_service.dart';
-import '../routing/routes.dart';
 import 'core/themes/colors.dart';
 import 'core/themes/dimens.dart';
 import 'core/themes/fonts.dart';
@@ -216,21 +213,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CustomButton(
-              buttonText: "Book Now",
-              buttonWidth: 255,
-              onPressed: () async {
-                final book = await HistoryServices().addBooking(place.id);
-                final snackbar = SnackBar(content: Text(book));
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(snackbar);
-                }
-                if (book.contains("Booking Success")) {
-                  if (context.mounted) {
-                    context.go(Routes.main);
-                  }
-                }
-              },
-            ),
+                buttonText: "Book Now", buttonWidth: 255, onPressed: () {}),
             GestureDetector(
               onTap: () {
                 setState(() => isLoveButtonClick

@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'domain/services/database_service.dart';
 import 'domain/services/place_service.dart';
-import 'domain/services/user_service.dart';
 import 'routing/router.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  // deleteAllData();
   initializeData();
   // checkDatabase();
   runApp(const MyApp());
@@ -28,8 +26,6 @@ class MyApp extends StatelessWidget {
 
 void initializeData() {
   PlaceService placeService = PlaceService();
-  UserService userService = UserService();
-  userService.insertDummyUser();
   placeService.insertDummyPlace();
 }
 
@@ -40,6 +36,6 @@ void deleteAllData() {
 
 void checkDatabase() {
   DatabaseService databaseService = DatabaseService.intance;
-  // databaseService.deleteDatabase;
+  databaseService.deleteDatabase();
   databaseService.checkTableStructure();
 }

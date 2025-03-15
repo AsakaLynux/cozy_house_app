@@ -7,7 +7,7 @@ import '../view/splash_screen.dart';
 import 'routes.dart';
 
 GoRouter router() => GoRouter(
-      initialLocation: "${Routes.main}/${Routes.houseDetail}",
+      initialLocation: Routes.main,
       debugLogDiagnostics: true,
       routes: [
         GoRoute(

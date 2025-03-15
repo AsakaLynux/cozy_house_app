@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'core/themes/colors.dart';
 import 'favourite_screen.dart';
 import 'home_screen.dart';
-import 'history_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -21,6 +20,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
     _pageViewController = PageController();
     _tabController = TabController(length: 4, vsync: this);
   }
@@ -123,7 +123,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             onPageChanged: _handlePageViewChanged,
             children: [
               HomeScreen(),
-              HistoryScreen(),
               FavouriteScreen(),
             ],
           ),
