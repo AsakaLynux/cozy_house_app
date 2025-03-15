@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../domain/models/place_model.dart';
+import '../domain/services/history_services.dart';
 import '../domain/services/place_service.dart';
 import '../routing/routes.dart';
 import 'core/themes/colors.dart';
@@ -85,7 +86,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
       );
     }
 
-    Widget detailTitle(AsyncSnapshot<PlaceModel> snapshot) {
+    Widget detailTitle(PlaceModel place) {
       return SizedBox(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -94,13 +95,13 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  snapshot.data!.name,
+                  place.name,
                   style: blackTextStyle.copyWith(fontSize: 22),
                 ),
                 const SizedBox(height: 2),
                 RichText(
                   text: TextSpan(
-                    text: "\$${snapshot.data!.price}",
+                    text: "\$${place.price}",
                     style: purpleTextStyle.copyWith(fontSize: 16),
                     children: [
                       TextSpan(
@@ -119,7 +120,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
                 itemCount: 5,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
-                  final int fav = snapshot.data!.rating;
+                  final int fav = place.rating;
                   if (fav > index) {
                     return Image.asset(
                       "assets/icon_star.png",
@@ -175,7 +176,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
       );
     }
 
-    Widget location(AsyncSnapshot<PlaceModel> snapshot) {
+    Widget location(PlaceModel place) {
       return SizedBox(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,8 +193,8 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(snapshot.data!.address, style: greyTextStyle),
-                      Text(snapshot.data!.city, style: greyTextStyle),
+                      Text(place.address, style: greyTextStyle),
+                      Text(place.city, style: greyTextStyle),
                     ],
                   ),
                   Image.asset(
@@ -209,7 +210,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
       );
     }
 
-    Widget bottomButton() {
+    Widget bottomButton(PlaceModel place) {
       return SizedBox(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -217,7 +218,18 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
             CustomButton(
               buttonText: "Book Now",
               buttonWidth: 255,
-              onPressed: () => context.go(Routes.main),
+              onPressed: () async {
+                final book = await HistoryServices().addBooking(place.id);
+                final snackbar = SnackBar(content: Text(book));
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                }
+                if (book.contains("Booking Success")) {
+                  if (context.mounted) {
+                    context.go(Routes.main);
+                  }
+                }
+              },
             ),
             GestureDetector(
               onTap: () {
@@ -263,6 +275,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
           } else if (!snapshot.hasData || snapshot.data == null) {
             return const Text("No Data");
           } else {
+            final PlaceModel? placeModel = snapshot.data;
             return Stack(
               children: [
                 // Image.asset(
@@ -270,7 +283,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
                 //   height: 350,
                 // ),
                 Image.network(
-                  snapshot.data!.image,
+                  placeModel!.image,
                   height: 350,
                   fit: BoxFit.cover,
                 ),
@@ -291,11 +304,11 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        detailTitle(snapshot),
+                        detailTitle(placeModel),
                         mainFacilities(),
                         photos(),
-                        location(snapshot),
-                        bottomButton(),
+                        location(placeModel),
+                        bottomButton(placeModel),
                       ],
                     ),
                   ),
