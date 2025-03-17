@@ -1,9 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../domain/models/place_model.dart';
+import '../domain/services/favourite_services.dart';
 import '../domain/services/place_service.dart';
+import '../routing/routes.dart';
 import 'core/themes/colors.dart';
 import 'core/themes/dimens.dart';
 import 'core/themes/fonts.dart';
@@ -209,35 +212,35 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
 
     Widget bottomButton(PlaceModel place) {
       return SizedBox(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CustomButton(
-                buttonText: "Book Now", buttonWidth: 255, onPressed: () {}),
-            GestureDetector(
-              onTap: () {
-                setState(() => isLoveButtonClick
-                    ? isLoveButtonClick = false
-                    : isLoveButtonClick = true);
-              },
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: cardBackgroundColor,
-                  borderRadius: BorderRadius.circular(17),
-                ),
-                child: Center(
-                  child: Image.asset(
-                    "assets/icon_love.png",
-                    width: 26,
-                    height: 26,
-                    color: isLoveButtonClick ? redColor : greyColor,
-                  ),
-                ),
-              ),
-            )
-          ],
+        child: Center(
+          child: FutureBuilder(
+            future: FavouriteServices().isFavourite(place.id),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text("Error: ${snapshot.error}");
+              } else if (!snapshot.hasData || snapshot.data == null) {
+                return const Text("No Data");
+              } else {
+                return CustomButton(
+                  buttonText: snapshot.data!
+                      ? "Already in favourite"
+                      : "Add to favourite",
+                  buttonWidth: 255,
+                  onPressed: () async {
+                    final insertData =
+                        await FavouriteServices().addFavouritePlace(place.id);
+                    if (snapshot.data == false) {
+                      if (insertData.contains("Insert Favourite success")) {
+                        if (context.mounted) {
+                          context.go(Routes.main);
+                        }
+                      }
+                    }
+                  },
+                );
+              }
+            },
+          ),
         ),
       );
     }
@@ -261,10 +264,6 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
             final PlaceModel? placeModel = snapshot.data;
             return Stack(
               children: [
-                // Image.asset(
-                //   "assets/city3.png",
-                //   height: 350,
-                // ),
                 Image.network(
                   placeModel!.image,
                   height: 350,

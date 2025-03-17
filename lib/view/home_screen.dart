@@ -158,6 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           price: snapshot.data![index].price,
                           city: snapshot.data![index].city,
                           country: snapshot.data![index].country,
+                          onTap: () {},
                         ),
                       );
                     },

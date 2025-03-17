@@ -17,18 +17,15 @@ class PlaceService {
     final List<PlaceModel> placeList = data
         .map(
           (e) => PlaceModel(
-            id: e["id"] as int,
-            name: e["name"] as String,
-            image: e["image"] as String,
-            address: e["address"] as String,
-            city: e["city"] as String,
-            country: e["country"] as String,
-            rating: e["rating"] as int,
-            price: e["price"] as int,
-            createBy: e["createBy"] as String,
-            createAt: e["createAt"] as String,
-            updateBy: e["updateBy"] as String,
-            updateAt: e["updateAt"] as String,
+            id: e[placeIdColumnName] as int,
+            name: e[placeNameColumnName] as String,
+            image: e[placeImageColumnName] as String,
+            address: e[placeAddressColumnName] as String,
+            city: e[placeCityColumnName] as String,
+            country: e[placeCountryColumnName] as String,
+            rating: e[placeRatingColumnName] as int,
+            price: e[placePriceColumnName] as int,
+            createAt: e[placeCreateAtColumnName] as String,
           ),
         )
         .toList();
@@ -51,18 +48,15 @@ class PlaceService {
     final place = data
         .map(
           (e) => PlaceModel(
-            id: e["id"] as int,
-            name: e["name"] as String,
-            image: e["image"] as String,
-            address: e["address"] as String,
-            city: e["city"] as String,
-            country: e["country"] as String,
-            rating: e["rating"] as int,
-            price: e["price"] as int,
-            createBy: e["createBy"] as String,
-            createAt: e["createAt"] as String,
-            updateBy: e["updateBy"] as String,
-            updateAt: e["updateAt"] as String,
+            id: e[placeIdColumnName] as int,
+            name: e[placeNameColumnName] as String,
+            image: e[placeImageColumnName] as String,
+            address: e[placeAddressColumnName] as String,
+            city: e[placeCityColumnName] as String,
+            country: e[placeCountryColumnName] as String,
+            rating: e[placeRatingColumnName] as int,
+            price: e[placePriceColumnName] as int,
+            createAt: e[placeCreateAtColumnName] as String,
           ),
         )
         .toList()
@@ -112,10 +106,7 @@ class PlaceService {
             placeCountryColumnName: place.country,
             placeRatingColumnName: place.rating,
             placePriceColumnName: place.price,
-            placeCreateByColumnName: place.createBy,
             placeCreateAtColumnName: place.createAt.toString(),
-            placeUpdateByColumnName: place.updateBy,
-            placeUpdateAtColumnName: place.updateAt.toString(),
           },
         );
       }

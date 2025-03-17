@@ -80,19 +80,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                   label: "Home",
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.history,
-                    size: 26,
-                    color: greyColor,
-                  ),
-                  activeIcon: Icon(
-                    Icons.history,
-                    size: 26,
-                    color: greyColor,
-                  ),
-                  label: "History",
-                ),
-                BottomNavigationBarItem(
                   icon: Image.asset(
                     "assets/icon_love.png",
                     width: 26,

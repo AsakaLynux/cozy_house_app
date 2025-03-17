@@ -29,11 +29,6 @@ void initializeData() {
   placeService.insertDummyPlace();
 }
 
-void deleteAllData() {
-  PlaceService placeService = PlaceService();
-  placeService.deleteAllPlace();
-}
-
 void checkDatabase() {
   DatabaseService databaseService = DatabaseService.intance;
   databaseService.deleteDatabase();

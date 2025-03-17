@@ -26,30 +26,28 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Text(
-            title,
-            style: blackTextStyle,
-          ),
-          TextFormField(
-            controller: controller,
-            validator: validator,
-            keyboardType: keyboardType,
-            obscureText: obscure,
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: greyTextStyle,
-              errorText: errorText,
-              suffixIcon: suffixIcon,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
+    return Column(
+      children: [
+        Text(
+          title,
+          style: blackTextStyle,
+        ),
+        TextFormField(
+          controller: controller,
+          validator: validator,
+          keyboardType: keyboardType,
+          obscureText: obscure,
+          decoration: InputDecoration(
+            hintText: hintText,
+            hintStyle: greyTextStyle,
+            errorText: errorText,
+            suffixIcon: suffixIcon,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(18),
             ),
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     );
   }
 }

@@ -10,6 +10,8 @@ class RecommendedTile extends StatelessWidget {
   final int price;
   final String city;
   final String country;
+  final bool isFavourite;
+  final Function()? onTap;
   const RecommendedTile({
     super.key,
     required this.tileName,
@@ -18,6 +20,8 @@ class RecommendedTile extends StatelessWidget {
     required this.price,
     required this.city,
     required this.country,
+    required this.onTap,
+    this.isFavourite = false,
   });
 
   @override
@@ -27,6 +31,7 @@ class RecommendedTile extends StatelessWidget {
       height: 110,
       margin: EdgeInsets.only(bottom: 30),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(18),
@@ -35,9 +40,6 @@ class RecommendedTile extends StatelessWidget {
               height: 110,
               child: Stack(
                 children: [
-                  // Container(
-                  //   decoration: BoxDecoration(color: greyColor),
-                  // ),
                   Image.network(imageUrl, fit: BoxFit.fill),
                   // Image.asset("assets/photo1.png"),
                   Align(
@@ -68,7 +70,7 @@ class RecommendedTile extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: 15),
           SizedBox(
             width: 180,
             child: Column(
@@ -100,6 +102,15 @@ class RecommendedTile extends StatelessWidget {
               ],
             ),
           ),
+          isFavourite
+              ? GestureDetector(
+                  onTap: onTap,
+                  child: Icon(
+                    Icons.delete_forever,
+                    size: 26,
+                  ),
+                )
+              : SizedBox(),
         ],
       ),
     );

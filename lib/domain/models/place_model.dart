@@ -7,10 +7,7 @@ class PlaceModel {
   final String country;
   final int rating;
   final int price;
-  final String createBy;
   final String createAt;
-  final String updateBy;
-  final String updateAt;
 
   PlaceModel({
     required this.id,
@@ -21,9 +18,6 @@ class PlaceModel {
     required this.country,
     required this.rating,
     required this.price,
-    required this.createBy,
     required this.createAt,
-    required this.updateBy,
-    required this.updateAt,
   });
 }
